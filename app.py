@@ -3,7 +3,7 @@ import streamlit as st
 
 st.title("✍️ 6th Grade Writing & Grammar Tutor")
 st.write(
-    "Hi George! Paste a sentence you're working on or ask a grammar question"
+    "Hi George! Paste some text you're working on or ask a grammar question"
     " below."
 )
 
