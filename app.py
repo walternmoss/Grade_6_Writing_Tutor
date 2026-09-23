@@ -3,20 +3,21 @@ import streamlit as st
 
 st.title("✍️ 6th Grade Writing & Grammar Tutor")
 st.write(
-    "Hi George! Paste some text you're working on or ask a grammar question"
+    "Hi George! Paste a sentence you're working on or ask a grammar question"
     " below."
 )
 
-# Initialize the Gemini client using Streamlit secrets
-if "GEMINI_API_KEY" in st.secrets:
-  client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-else:
-  st.error("API key not found in Streamlit secrets.")
-  st.stop()
+# Initialize the Gemini client and store it in session state to prevent client-closed errors
+if "client" not in st.session_state:
+  if "GEMINI_API_KEY" in st.secrets:
+    st.session_state.client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+  else:
+    st.error("API key not found in Streamlit secrets.")
+    st.stop()
 
-# Initialize chat session with a tailored pedagogical persona
+# Initialize chat session using the persisted client instance
 if "chat" not in st.session_state:
-  st.session_state.chat = client.chats.create(
+  st.session_state.chat = st.session_state.client.chats.create(
       model="gemini-2.5-flash",
       config={
           "system_instruction": (
@@ -34,14 +35,11 @@ if "chat" not in st.session_state:
 for message in st.session_state.chat.get_history():
   role = "user" if message.role == "user" else "assistant"
   with st.chat_message(role):
-    # Safely extract text from message parts
     text_content = "".join([part.text for part in message.parts if part.text])
     st.markdown(text_content)
 
 # Handle user input
-if prompt := st.chat_input(
-    "Type your sentence or question here..."
-):
+if prompt := st.chat_input("Type your sentence or question here..."):
   with st.chat_message("user"):
     st.markdown(prompt)
 
