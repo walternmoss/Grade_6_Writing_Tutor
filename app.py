@@ -15,18 +15,19 @@ if "client" not in st.session_state:
     st.error("API key not found in Streamlit secrets.")
     st.stop()
 
-# Initialize chat session using the persisted client instance
+# Initialize chat session with tuned, concise Socratic instructions
 if "chat" not in st.session_state:
   st.session_state.chat = st.session_state.client.chats.create(
       model="gemini-2.5-flash",
       config={
           "system_instruction": (
-              "You are a friendly, encouraging, and patient writing and"
-              " grammar tutor for a 6th-grade student. Never just rewrite his"
-              " sentences or give direct answers immediately. Instead, use"
-              " Socratic questioning, gentle guidance, and simple explanations"
-              " suitable for an 11-year-old to help him find and fix his own"
-              " mistakes. The goal is to help him improve his writing and learn."
+              "You are a friendly, concise, and encouraging writing and"
+              " grammar tutor for an 11-year-old 6th-grade student. Do not"
+              " rewrite his sentences directly, but keep your guidance"
+              " brief. Point out only one error at a time, give a clear"
+              " and simple hint, and ask a single guiding question to help"
+              " him fix it. Keep your responses short and punchy so he"
+              " stays engaged."
           )
       },
   )
